@@ -6,10 +6,14 @@ import { Outlet } from "react-router-dom";
 function Rootlayout() {
   return (
     <div>
+      {/* Skip to main content for accessibility */}
+      <a href="#main-content" className="skip-link">
+        Skip to main content
+      </a>
       <Header />
-      <div className="main-content">
+      <main id="main-content" className="main-content" role="main">
         <Outlet />
-      </div>
+      </main>
       <Footer />
     </div>
   );

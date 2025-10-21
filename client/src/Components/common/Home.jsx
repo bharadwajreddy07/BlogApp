@@ -2,13 +2,59 @@ import { useContext, useEffect, useState } from "react";
 import { UserAuthorContextObj } from "../Context/UserAuthorContext.jsx";
 import { useUser } from "@clerk/clerk-react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate, Link } from "react-router-dom"; 
 
 function Home() {
   const { currentUser, setCurrentUser } = useContext(UserAuthorContextObj);
   const { isSignedIn, user, isLoaded } = useUser();
   const [error, setError] = useState('');
+  const [featuredArticles, setFeaturedArticles] = useState([]);
+  const [articlesLoading, setArticlesLoading] = useState(false);
   const navigate = useNavigate();
+  
+  // Fetch featured articles for preview
+  const fetchFeaturedArticles = async () => {
+    try {
+      setArticlesLoading(true);
+      const response = await axios.get('http://localhost:4000/authorApi/articles');
+      if (response.data && response.data.payload) {
+        // Get the 3 most recent articles as featured
+        const featured = response.data.payload.slice(0, 3);
+        setFeaturedArticles(featured);
+      }
+    } catch (err) {
+      console.log('Featured articles not available:', err.message);
+      // Set some sample articles for demo
+      setFeaturedArticles([
+        {
+          _id: '1',
+          title: 'Getting Started with React Development',
+          content: 'Learn the fundamentals of React and start building amazing web applications...',
+          category: 'Technology',
+          authorData: { nameOfAuthor: 'John Doe' },
+          dateOfCreation: new Date().toISOString()
+        },
+        {
+          _id: '2', 
+          title: 'The Future of Web Development',
+          content: 'Explore the latest trends and technologies shaping the future of web development...',
+          category: 'Technology',
+          authorData: { nameOfAuthor: 'Jane Smith' },
+          dateOfCreation: new Date().toISOString()
+        },
+        {
+          _id: '3',
+          title: 'Building Better User Experiences',
+          content: 'Discover key principles and best practices for creating exceptional user experiences...',
+          category: 'Design',
+          authorData: { nameOfAuthor: 'Mike Johnson' },
+          dateOfCreation: new Date().toISOString()
+        }
+      ]);
+    } finally {
+      setArticlesLoading(false);
+    }
+  };
   
   async function onselectRole(event) {
     setError('');
@@ -68,6 +114,11 @@ function Home() {
         email: user?.primaryEmailAddress?.emailAddress || user?.emailAddresses[0]?.emailAddress,
         profileimageURL: user?.imageUrl,
       });
+    }
+    
+    // Fetch featured articles for non-signed-in users
+    if (!isSignedIn) {
+      fetchFeaturedArticles();
     }
   }, [isLoaded, isSignedIn, user]);
 
@@ -169,6 +220,74 @@ function Home() {
             <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
               <path d="M0,60 C300,120 900,0 1200,60 L1200,120 L0,120 Z" fill="rgba(255,255,255,0.1)"></path>
             </svg>
+          </div>
+        </div>
+      )}
+
+      {/* Featured Articles Preview Section */}
+      {!isSignedIn && (
+        <div className="featured-section">
+          <div className="container">
+            <div className="featured-header">
+              <h2 className="featured-title">
+                <i className="fas fa-star featured-icon" aria-hidden="true"></i>
+                Featured Articles
+              </h2>
+              <p className="featured-subtitle">
+                Discover amazing content from our community of writers
+              </p>
+            </div>
+            
+            {articlesLoading ? (
+              <div className="featured-loading">
+                <div className="loading-spinner" aria-label="Loading featured articles"></div>
+                <p>Loading featured articles...</p>
+              </div>
+            ) : (
+              <div className="featured-grid">
+                {featuredArticles.map((article, index) => (
+                  <article key={article._id} className="featured-card" tabIndex="0">
+                    <div className="featured-card-header">
+                      <span className="featured-category">{article.category}</span>
+                      <time className="featured-date" dateTime={article.dateOfCreation}>
+                        {new Date(article.dateOfCreation).toLocaleDateString()}
+                      </time>
+                    </div>
+                    <h3 className="featured-card-title">{article.title}</h3>
+                    <p className="featured-card-excerpt">
+                      {article.content.substring(0, 120)}...
+                    </p>
+                    <div className="featured-card-footer">
+                      <div className="featured-author">
+                        <i className="fas fa-user-circle" aria-hidden="true"></i>
+                        <span>{article.authorData?.nameOfAuthor || 'Anonymous'}</span>
+                      </div>
+                      <Link 
+                        to="/signup" 
+                        className="featured-read-more"
+                        aria-label={`Sign up to read ${article.title}`}
+                      >
+                        Read More <i className="fas fa-arrow-right" aria-hidden="true"></i>
+                      </Link>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            )}
+            
+            <div className="featured-cta">
+              <p className="featured-cta-text">Ready to join our community?</p>
+              <div className="featured-cta-buttons">
+                <Link to="/signup" className="btn-featured-primary">
+                  <i className="fas fa-user-plus" aria-hidden="true"></i>
+                  Sign Up Free
+                </Link>
+                <Link to="/articles" className="btn-featured-secondary">
+                  <i className="fas fa-newspaper" aria-hidden="true"></i>
+                  Browse All Articles
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       )}
