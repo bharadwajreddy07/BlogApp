@@ -134,7 +134,7 @@ function Home() {
                 <div className="col-lg-6 hero-text-section">
                   <div className="hero-badge">
                     <i className="fas fa-star me-2"></i>
-                    Join 1000+ Writers Worldwide
+                    Join  Writers Worldwide
                   </div>
                   
                   <h1 className="hero-title">
@@ -156,10 +156,7 @@ function Home() {
                       <i className="fas fa-check-circle"></i>
                       <span>Connect with Readers</span>
                     </div>
-                    <div className="feature-item">
-                      <i className="fas fa-check-circle"></i>
-                      <span>Build Your Portfolio</span>
-                    </div>
+
                   </div>
                   
                   <div className="hero-actions">
