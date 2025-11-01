@@ -55,7 +55,7 @@ function PostArticle() {
             console.log('📤 Sending article payload to server:', articlePayload);
             console.log('📧 Author email:', articlePayload.authorData.email);
             
-            const response = await axios.post('http://localhost:4000/authorApi/article', articlePayload);
+            const response = await axios.post('https://blogapp-1iqk.onrender.com/authorApi/article', articlePayload);
             
             if (response.status === 201) {
                 setSuccess('Article created successfully! Redirecting...');

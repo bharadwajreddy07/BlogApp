@@ -27,7 +27,7 @@ function AuthorProfile() {
     const fetchAuthorArticles = async () => {
         try {
             setLoading(true);
-            const response = await axios.get('http://localhost:4000/authorApi/articles');
+            const response = await axios.get('https://blogapp-1iqk.onrender.com/authorApi/articles');
             
             // Filter articles to show only current user's articles
             const currentUserEmail = user?.primaryEmailAddress?.emailAddress || user?.emailAddresses?.[0]?.emailAddress;
@@ -51,7 +51,7 @@ function AuthorProfile() {
 
     const deleteArticle = async (articleId) => {
         try {
-            await axios.delete(`http://localhost:4000/authorApi/articles/${articleId}`);
+            await axios.delete(`https://blogapp-1iqk.onrender.com/authorApi/articles/${articleId}`);
             showNotification('Article deleted successfully!', 'success');
             // Refresh the articles list
             fetchAuthorArticles();

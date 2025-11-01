@@ -22,14 +22,14 @@ function Articlebyid() {
         try {
             setLoading(true);
             // Use a more specific API endpoint if available
-            const response = await axios.get(`http://localhost:4000/authorApi/article/${articleId}`);
+            const response = await axios.get(`https://blogapp-1iqk.onrender.com/authorApi/article/${articleId}`);
             
             if (response.data && response.data.payload) {
                 setArticle(response.data.payload);
                 setError('');
             } else {
                 // Fallback: search through all articles
-                const allArticlesResponse = await axios.get('http://localhost:4000/authorApi/articles');
+                const allArticlesResponse = await axios.get('https://blogapp-1iqk.onrender.com/authorApi/articles');
                 const foundArticle = allArticlesResponse.data.payload?.find(art => art._id === articleId);
                 
                 if (!foundArticle) {
@@ -44,7 +44,7 @@ function Articlebyid() {
             console.error('Error fetching article:', err);
             // If specific endpoint fails, try fallback
             try {
-                const response = await axios.get('http://localhost:4000/authorApi/articles');
+                const response = await axios.get('https://blogapp-1iqk.onrender.com/authorApi/articles');
                 const foundArticle = response.data.payload?.find(art => art._id === articleId);
                 
                 if (!foundArticle) {
@@ -65,7 +65,7 @@ function Articlebyid() {
 
     const fetchRelatedArticles = async () => {
         try {
-            const response = await axios.get('http://localhost:4000/authorApi/articles');
+            const response = await axios.get('https://blogapp-1iqk.onrender.com/authorApi/articles');
             const allArticles = response.data.payload;
             
             // Get articles from same category or author (excluding current article)

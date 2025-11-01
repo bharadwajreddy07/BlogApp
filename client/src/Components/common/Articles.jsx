@@ -18,7 +18,7 @@ function Articles() {
     const fetchArticles = async () => {
         try {
             setLoading(true);
-            const response = await axios.get('http://localhost:4000/authorApi/articles');
+            const response = await axios.get('https://blogapp-1iqk.onrender.com/authorApi/articles');
             if (response.data && response.data.payload) {
                 setArticles(response.data.payload);
                 setError('');

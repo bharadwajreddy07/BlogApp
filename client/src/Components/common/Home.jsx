@@ -16,7 +16,7 @@ function Home() {
   const fetchFeaturedArticles = async () => {
     try {
       setArticlesLoading(true);
-      const response = await axios.get('http://localhost:4000/authorApi/articles');
+      const response = await axios.get('https://blogapp-1iqk.onrender.com/authorApi/articles');
       if (response.data && response.data.payload) {
         // Get the 3 most recent articles as featured
         const featured = response.data.payload.slice(0, 3);
@@ -69,16 +69,27 @@ function Home() {
       profileimageURL: currentUser?.profileimageURL || user?.imageUrl || ''
     };
     
-    if (!updatedUser.firstname || !updatedUser.lastname || !updatedUser.email) {
-      setError("Missing required user information. Please make sure your profile is complete.");
+    console.log("Updated user data:", updatedUser); // Debug log
+    console.log("Clerk user data:", user); // Debug log
+    
+    if (!updatedUser.email) {
+      setError("Missing email information. Please make sure your profile is complete.");
       return;
+    }
+    
+    // Set default values for missing names
+    if (!updatedUser.firstname) {
+      updatedUser.firstname = user?.fullName?.split(' ')[0] || user?.username || "User";
+    }
+    if (!updatedUser.lastname) {
+      updatedUser.lastname = user?.fullName?.split(' ')[1] || "";
     }
 
     try {
       let res = null;
       
       if (selectedRole === "author") {
-        res = await axios.post("http://localhost:4000/authorApi/author", updatedUser);
+        res = await axios.post("https://blogapp-1iqk.onrender.com/authorApi/author", updatedUser);
         const { message } = res.data;
         
         if (message === "author") {
@@ -90,7 +101,7 @@ function Home() {
       }
       
       if (selectedRole === "user") {
-        res = await axios.post("http://localhost:4000/userApi/user", updatedUser);
+        res = await axios.post("https://blogapp-1iqk.onrender.com/userApi/user", updatedUser);
         const { message } = res.data;
         
         if (message === "user") {
@@ -108,11 +119,13 @@ function Home() {
   
   useEffect(() => {
     if (isSignedIn && user) {
+      console.log("Clerk user object:", user); // Debug log
+      
       setCurrentUser({
-        firstname: user?.firstName,
-        lastname: user?.lastName,
-        email: user?.primaryEmailAddress?.emailAddress || user?.emailAddresses[0]?.emailAddress,
-        profileimageURL: user?.imageUrl,
+        firstname: user?.firstName || user?.fullName?.split(' ')[0] || user?.username || "User",
+        lastname: user?.lastName || user?.fullName?.split(' ')[1] || "",
+        email: user?.primaryEmailAddress?.emailAddress || user?.emailAddresses?.[0]?.emailAddress || user?.email,
+        profileimageURL: user?.imageUrl || user?.profileImageUrl || "",
       });
     }
     

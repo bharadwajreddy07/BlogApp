@@ -27,7 +27,7 @@ function Comments({ articleId, comments, onCommentAdded }) {
             };
 
             const response = await axios.post(
-                `http://localhost:4000/userApi/comment/${articleId}`,
+                `https://blogapp-1iqk.onrender.com/userApi/comment/${articleId}`,
                 commentData
             );
 

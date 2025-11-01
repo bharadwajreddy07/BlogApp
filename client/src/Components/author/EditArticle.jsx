@@ -26,7 +26,7 @@ function EditArticle() {
     const fetchArticle = async () => {
         try {
             setLoading(true);
-            const response = await axios.get('http://localhost:4000/authorApi/articles');
+            const response = await axios.get('https://blogapp-1iqk.onrender.com/authorApi/articles');
             
             // Find the specific article to edit
             const article = response.data.payload.find(art => art._id === articleId);
@@ -87,7 +87,7 @@ function EditArticle() {
 
             console.log('📤 Updating article:', updatePayload);
             
-            const response = await axios.put(`http://localhost:4000/authorApi/article/${articleId}`, updatePayload);
+            const response = await axios.put(`https://blogapp-1iqk.onrender.com/authorApi/article/${articleId}`, updatePayload);
             
             if (response.status === 200) {
                 setSuccess('Article updated successfully! Redirecting...');
