@@ -12,7 +12,9 @@ const userAuthorSchema = new mongoose.Schema({
     },
     lastname: {
         type: String,
-        required: true,
+        // make lastname optional because some auth providers may not provide it
+        // store an empty string by default to avoid validation errors
+        default: "",
     },
     email: {
         type: String,
@@ -21,6 +23,7 @@ const userAuthorSchema = new mongoose.Schema({
     },
     profileimageURL: {
         type: String,
+        // keep profile image required as before
         required: true,
     },
     isActive: {
